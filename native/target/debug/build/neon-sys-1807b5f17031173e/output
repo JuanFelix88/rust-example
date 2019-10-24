@@ -1,0 +1,31 @@
+Skipping node-gyp installation as part of npm install.
+added 96 packages from 70 contributors and audited 184 packages in 7.067s
+found 4 vulnerabilities (1 moderate, 3 high)
+  run `npm audit fix` to fix them, or `npm audit` for details
+
+> @ build-debug /workspace/test-rust/native/target/debug/build/neon-sys-1807b5f17031173e/out/native
+> node-gyp build --debug
+
+make: Entering directory '/workspace/test-rust/native/target/debug/build/neon-sys-1807b5f17031173e/out/native/build'
+  CXX(target) Debug/obj.target/neon/src/neon.o
+  SOLINK_MODULE(target) Debug/obj.target/neon.node
+  COPY Debug/neon.node
+make: Leaving directory '/workspace/test-rust/native/target/debug/build/neon-sys-1807b5f17031173e/out/native/build'
+TARGET = Some("x86_64-unknown-linux-gnu")
+HOST = Some("x86_64-unknown-linux-gnu")
+AR_x86_64-unknown-linux-gnu = None
+AR_x86_64_unknown_linux_gnu = None
+HOST_AR = None
+AR = None
+running: "ar" "crs" "/workspace/test-rust/native/target/debug/build/neon-sys-1807b5f17031173e/out/libneon.a" "/workspace/test-rust/native/target/debug/build/neon-sys-1807b5f17031173e/out/native/build/Debug/obj.target/neon/src/neon.o"
+exit code: 0
+cargo:rustc-link-lib=static=neon
+cargo:rustc-link-search=native=/workspace/test-rust/native/target/debug/build/neon-sys-1807b5f17031173e/out
+CXXSTDLIB_x86_64-unknown-linux-gnu = None
+CXXSTDLIB_x86_64_unknown_linux_gnu = None
+HOST_CXXSTDLIB = None
+CXXSTDLIB = None
+cargo:rustc-link-lib=stdc++
+cargo:rerun-if-env-changed=npm_config_target
+cargo:rerun-if-env-changed=npm_config_arch
+cargo:rerun-if-env-changed=npm_config_target_arch
