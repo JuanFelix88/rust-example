@@ -3,9 +3,9 @@ extern crate neon;
 
 use neon::prelude::*;
 
-fn hello(mut cx: FunctionContext) -> JsResult<JsNumber> {
-    let tap = 23;
-    Ok(cx.number(tap))
+fn hello(mut cx: FunctionContext) -> JsResult<JsString> {
+    let tap = "Test addon";
+    Ok(cx.string(tap))
 }
 
 register_module!(mut cx, {
