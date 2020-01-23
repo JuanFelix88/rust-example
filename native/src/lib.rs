@@ -1,9 +1,11 @@
 extern crate neon;
+// {JsValue, Value, JsObject, JsArray, JsFunction, JsBoolean, JsNumber, JsString, StringResult, JsNull, JsUndefined}
 
 use neon::prelude::*;
 use std::fs;
 
 static mut AMOUNT: u8 = 0;
+
 
 fn hello(mut cx: FunctionContext) -> JsResult<JsNumber> {
     unsafe {
