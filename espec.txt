@@ -1,0 +1,63 @@
+--Especificação--
+
+::Bloco de instrução::
+
+	Como funciona:
+		Este é um escopo de bytes (uma matriz) que contém sequencialmente instruções byte a byte
+		 para formar posteriormente uma instrução maior e mais abstrata de um contexto de programação 
+		 que popularmente é conhecida.
+
+	Por que?:
+		A existência dessa especificação auxilia no tempo de execução da aplicação como um todo,
+		 mais especificamente determina alocações de memória, controla o estado da aplicação e dentre outras
+		 muitas funcionalidades.
+
+	Exemplo:
+		┌ (Tipo de instrução) #[Tipos de instruções]
+		│   ┌ (Bytes determinantes da instrução)
+		┴   ┴───
+		| 0 | 1...|
+--------------------------------------------------
+
+::Tipos de instruções::
+
+  (0) == Inicialização do módulo:
+    Finalidade:
+      A Inicialização do módulo determina uma série de meta informações do módulo em sí, 
+       e possuí uma série de 8 bytes, veja o exemplo.
+
+    Exemplo:
+        ┌ (Tipo de instrução 0)
+        │   ┌ (Quantidade de bytes do bloco, contando com o byte inicial)
+        │   │        ┌ (Versão do compilador (total de 3 bytes, exp: {1 | 0 | 1} resultaria em 1.0.1))
+        ┴   ┴   ─────┴────
+      | 0 | 8 | 0 | 0 | 0 | 0 | 0 | 0 |
+                            ─────┬─────
+                                └ (Versão do runtime, segue o mesmo padrão de versionamento anterior)
+  
+  (1) == Alocação de memória dinâmica:
+    Finalidade:
+      Como propriamente dito, está se resume em alocação de memória dinâmica, que se difere da alocação de 
+        memória estática do runtime.
+
+    Exemplo:
+        ┌ (Tipo de instrução 1)
+        │   ┌ (Tipo de dado em memória (0 = mutável | 1 = imutável))
+        │   │   ┌ (Tipo de dados para registro em memória) #[Tipos de dados]
+        ┴   ┴   ┴
+      | 1 | 3 | 0 | 0 | 0 | 0 | 0 | 0 |
+                    ─────┬─────
+                         └ (Versão do runtime, segue o mesmo padrão do anterior)
+--------------------------------------------------
+
+65.535 = u8;
+256 | 256
+
+::Tipos de dados::
+
+  (0) == u8:
+			┌ (Tipo de dado 0)
+			│   ┌ (0 à 255)
+			│   │
+			┴   ┴
+		| 1 | 3 |
