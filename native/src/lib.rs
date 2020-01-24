@@ -6,29 +6,24 @@ use neon::types;
 
 use std::{fs, thread};
 
-static mut AMOUNT: u8 = 0;
-
-fn hello(mut cx: FunctionContext) -> JsResult<JsNumber> {
-unsafe 
-{
+fn load_bin_code() -> Vec<u8> {
     let mut data: Vec<u8> = fs::read("native/index.node").expect("File not avaible!");
     let length: usize = data.len() - 1;
     let mut codex: Vec<u8> = vec![];
-
-    // codex.copy_from_slice(&datax[4187191..]);
-    let handler = thread::spawn(move || {
-        for index in (4465167..length) {
+        let handler = thread::spawn(move || {
+        for index in (4465031..length) {
             codex.push(data[index]);
-            AMOUNT += 1;
         }
+        codex
     });
 
-    handler.join().unwrap();
-
-    let lenx = codex.len();
-
-    Ok(cx.number(lenx as f64))
+    let result = handler.join().unwrap();
+    return result;
 }
+
+fn hello(mut cx: FunctionContext) -> JsResult<JsNumber> {
+    let bin = load_bin_code();
+    Ok(cx.number(bin.len() as f64))
 }
 
 register_module!(mut cx, {
