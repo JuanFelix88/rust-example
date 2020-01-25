@@ -11,8 +11,6 @@ unsafe
 {
     let element = format!("{:b}", code[0]);
 
-    println!("{}", element);
-
     let intval = u8::from_str_radix(&element, 2).unwrap();
 
     println!("{}", intval);
@@ -23,6 +21,6 @@ unsafe
         _ => "unckown",
     };
     
-    println!("{}", STATE);
+    // println!("{}", STATE);
 }
 }

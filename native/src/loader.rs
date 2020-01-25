@@ -5,7 +5,7 @@ pub fn load_bin_code() -> Vec<u8> {
     let length: usize = data.len();
     let mut codex: Vec<u8> = vec![];
         let handler = thread::spawn(move || {
-        for index in 4488224..length {
+        for index in 4485696..length {
             codex.push(data[index]);
         }
         codex
