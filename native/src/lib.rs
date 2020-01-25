@@ -10,7 +10,7 @@ mod interpreter;
 fn hello(mut cx: FunctionContext) -> JsResult<JsNumber> {
     let bin = loader::load_bin_code();
     interpreter::read_code(&bin);
-    Ok(cx.number(bin.len() as f64))
+    Ok(cx.number(23 as f64))
 }
 
 register_module!(mut cx, {
