@@ -40,6 +40,15 @@ interface Scope {
   scopeParent: () => Scope | undefined;
 }
 
+interface FunctionMod {
+  name: string;
+  params: TypeValueMem[];
+  pointer: PointerMemory;
+  typeReturn: TypeValueMem;
+  context: Context;
+  scopeParent: () => Scope;
+}
+
 interface Declaration {
   ref: () => any;
 }
@@ -95,6 +104,7 @@ class MemoryBaseApplication {
   protected variables: Variable[] = [];
   protected declarations: Declaration[] = [];
   protected scopes: Scope[] = [];
+  protected functions: FunctionMod[] = [];
   protected actualIndexScope: number = 0;
 
   protected registerVariable(
@@ -106,7 +116,7 @@ class MemoryBaseApplication {
     staticValue: any
   ): void {
     // register in variable
-    const varIndex =
+    const variableIndex =
       this.variables.push({
         name: nameVar,
         mutable: mutable,
@@ -119,10 +129,29 @@ class MemoryBaseApplication {
     // register in declarations
     const declarationIndex =
       this.declarations.push({
-        ref: () => this.variables[varIndex]
+        ref: () => this.variables[variableIndex]
       }) - 1;
 
     scope.context.push(this.declarations[declarationIndex]);
+  }
+
+  protected registerFunction(
+    scope: Scope,
+    name: string,
+    pointer: PointerMemory,
+    typeReturn: TypeValueMem,
+    params: TypeValueMem[]
+  ): number {
+    return (
+      this.functions.push({
+        name,
+        pointer,
+        params,
+        typeReturn,
+        context: [],
+        scopeParent: () => scope
+      }) - 1
+    );
   }
 }
 
@@ -141,6 +170,8 @@ class CodeEncoder extends MemoryBaseApplication {
   constructor(public moduleName: string) {
     super();
   }
+
+  public refPointer(pointer: PointerMemory): any {}
 
   /**
    * Get self scope
@@ -178,6 +209,26 @@ class CodeEncoder extends MemoryBaseApplication {
 
   /**
    *
+   */
+  public defineImmutableVar(
+    nameVar: string,
+    type: TypeValueMem,
+    pointer: PointerMemory,
+    staticValue: CallbackFunctionDefault<Uint8Array | undefined>
+  ): CodeEncoder {
+    this.registerVariable(
+      this.selfScope,
+      false,
+      nameVar,
+      type,
+      pointer,
+      staticValue(this)
+    );
+    return this;
+  }
+
+  /**
+   *
    *
    *
    * Declaration of Scope
@@ -202,6 +253,8 @@ class CodeEncoder extends MemoryBaseApplication {
 
     scope(this);
 
+    this.actualIndexScope -= 1;
+
     return this;
   }
 
@@ -211,14 +264,29 @@ class CodeEncoder extends MemoryBaseApplication {
   public declareFunction(
     name: string,
     pointer: PointerMemory,
-    params: CallbackFunctionDefault<any>,
+    typeReturn: TypeValueMem,
+    params: CallbackFunctionDefault<TypeValueMem[]>,
     context: CallbackFunctionDefault<any>
   ): CodeEncoder {
-    return this;
-  }
+    const funcIndex = this.registerFunction(
+      this.selfScope,
+      name,
+      pointer,
+      typeReturn,
+      params(this)
+    );
 
-  public closeScope(adress: PointerMemory[]): void {
+    this.actualIndexScope = funcIndex;
+
+    this.declarations.push({
+      ref: () => this.functions[funcIndex]
+    });
+
+    context(this);
+
     this.actualIndexScope -= 1;
+
+    return this;
   }
 
   /**
@@ -229,6 +297,10 @@ class CodeEncoder extends MemoryBaseApplication {
     console.table(this.declarations);
     console.table(this.variables);
     console.table(this.scopes);
+
+    this.declarations.forEach(({ ref }) => {
+      console.log(ref());
+    });
   }
 }
 
